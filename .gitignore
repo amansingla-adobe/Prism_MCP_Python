@@ -1,0 +1,7 @@
+.env
+venv/
+db/prism.duckdb
+__pycache__/
+data/raw/
+guardrail_qa_report.xlsx
+~$*.xlsx

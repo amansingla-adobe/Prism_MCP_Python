@@ -1,0 +1,30 @@
+Are there any breaches in xlg-pord in last 7 days?
+How many breach happened in xlg-prod?
+How many breaches happened in streaming ingestion today in xlg-prod?
+How many breaches happened in streaming ingestion in last 7 days in xlg-prod?
+How many breaches happened in last 7 days in xlg-prod?
+Is my sandbox (xlg-prod) healthy?
+Are there any breaches in xlg-prod?
+Which breaches are most urgent to act on in xlg-prod?
+Which guardrails are breached most persistently, not just today in xlg-prod?
+What's newly breaching that wasn't a problem 30 days ago in xlg-prod?
+When Streaming Ingestion spikes, does Streaming Segmentation spike too in xlg-prod in last 7 days?
+Is the breach count going up or down day-over-day over the last 30 days in xlg-prod?
+
+
+
+How many segmentation jobs failed in b2b-prod today?
+Show me jobs still running?
+What's the expected processing duration for in-progress jobs in b2b-prod?
+Which jobs were cancelled in the last 7 days in b2b-prod?
+What's the success rate of segmentation jobs this week in b2b-prod?
+What's the average totalTimeMs for scheduled jobs vs API-triggered jobs in b2b-prod?
+Which job took the longest to complete this month in b2b-prod?
+What's the trend in job duration for xlg-prod over the last 30 days
+Compare average job duration between this month and previous month in b2b-prod?
+What's the total number of profiles processed across all jobs today in b2b-prod?
+What's the total number of profiles processed trend across all jobs in last 30 days in b2b-prod?
+How many audiences does a typical job evaluate, on average in b2b-prod?
+How many audiences have > 30% of the total profile, in today's run in b2b-prod?
+Which audiences had the most profiles qualify in job 36bd7281-f006-45b1-807e-84c969ce8b3f in b2b-prod
+Which audience consistently has the highest percentage of total profiles across jobs in b2b-prod?

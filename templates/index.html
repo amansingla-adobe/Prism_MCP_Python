@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Project Prism - Platform Ops Assistant</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Adobe Clean", "Segoe UI", Roboto, -apple-system, sans-serif;
+    background: #fafafa; color: #2c2c2c; height: 100vh; display: flex; flex-direction: column;
+  }
+  header {
+    padding: 16px 28px; background: #ffffff; border-bottom: 1px solid #e1e1e1;
+    display: flex; align-items: center; gap: 14px;
+  }
+  header img { height: 28px; }
+  header .titles { display: flex; flex-direction: column; }
+  header h1 { font-size: 16px; margin: 0; font-weight: 700; color: #2c2c2c; }
+  header span { font-size: 12px; color: #6e6e6e; }
+  header .badge {
+    margin-left: auto; font-size: 11px; padding: 4px 10px; border-radius: 12px;
+    background: #fbe9e7; color: #d31411; font-weight: 600;
+  }
+  #chat { flex: 1; overflow-y: auto; padding: 28px; display: flex; flex-direction: column; gap: 16px; background: #fafafa; }
+  .msg { max-width: 68%; padding: 12px 16px; border-radius: 12px; line-height: 1.55; font-size: 14px; }
+  .user { align-self: flex-end; background: #eb1000; color: white; border-bottom-right-radius: 3px; }
+  .bot {
+    align-self: flex-start; background: #ffffff; color: #2c2c2c;
+    border: 1px solid #e1e1e1; border-bottom-left-radius: 3px;
+  }
+  .bot .sql {
+    margin-top: 10px; font-size: 11px; color: #6e6e6e; background: #f5f5f5;
+    padding: 10px 12px; border-radius: 8px; white-space: pre-wrap; font-family: Consolas, monospace;
+    border: 1px solid #e1e1e1;
+  }
+  .bot .sql-toggle { font-size: 12px; color: #eb1000; cursor: pointer; margin-top: 8px; display: inline-block; font-weight: 600; }
+  .typing { align-self: flex-start; color: #8e8e8e; font-size: 13px; font-style: italic; padding-left: 4px; }
+  #inputBar { display: flex; padding: 16px 28px; gap: 10px; border-top: 1px solid #e1e1e1; background: #ffffff; }
+  #q {
+    flex: 1; padding: 12px 16px; border-radius: 8px; border: 1px solid #d5d5d5;
+    background: #ffffff; color: #2c2c2c; font-size: 14px;
+  }
+  #q:focus { outline: none; border-color: #eb1000; box-shadow: 0 0 0 3px rgba(235,16,0,0.1); }
+  button {
+    padding: 12px 22px; border-radius: 8px; border: none; background: #eb1000;
+    color: white; font-weight: 700; cursor: pointer; font-size: 14px; transition: background 0.15s;
+  }
+  button:hover { background: #c60d00; }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="/static/adobe-logo.png" alt="Adobe">
+  <div class="titles">
+    <h1>Project Prism</h1>
+    <span>Platform Ops - Governance Standing</span>
+  </div>
+  <div class="badge">POC Demo</div>
+</header>
+
+<div id="chat"></div>
+
+<div id="inputBar">
+  <input id="q" type="text" placeholder="Ask about guardrail breaches..." autofocus>
+  <button onclick="send()">Send</button>
+</div>
+
+<script>
+const chat = document.getElementById('chat');
+const input = document.getElementById('q');
+
+function addMessage(text, sender) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + sender;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+function addBotMessage(answer, sqlQuery) {
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.textContent = answer;
+
+  if (sqlQuery) {
+    const toggle = document.createElement('div');
+    toggle.className = 'sql-toggle';
+    toggle.textContent = '▸ Show SQL query used';
+    const sqlBox = document.createElement('div');
+    sqlBox.className = 'sql';
+    sqlBox.textContent = sqlQuery;
+    sqlBox.style.display = 'none';
+    toggle.onclick = () => {
+      const showing = sqlBox.style.display === 'block';
+      sqlBox.style.display = showing ? 'none' : 'block';
+      toggle.textContent = showing ? '▸ Show SQL query used' : '▾ Hide SQL query';
+    };
+    div.appendChild(toggle);
+    div.appendChild(sqlBox);
+  }
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+async function send() {
+  const question = input.value.trim();
+  if (!question) return;
+  addMessage(question, 'user');
+  input.value = '';
+
+  const typing = document.createElement('div');
+  typing.className = 'typing';
+  typing.textContent = 'Prism is thinking...';
+  chat.appendChild(typing);
+  chat.scrollTop = chat.scrollHeight;
+
+  try {
+    const res = await fetch('/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question })
+    });
+    const data = await res.json();
+    typing.remove();
+    addBotMessage(data.answer, data.sql_query);
+  } catch (err) {
+    typing.remove();
+    addBotMessage('Something went wrong reaching the server.', null);
+  }
+}
+
+input.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
+</script>
+
+</body>
+</html>

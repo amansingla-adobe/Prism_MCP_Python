@@ -1,0 +1,6 @@
+﻿duckdb
+fastmcp
+anthropic[bedrock]
+python-dotenv
+pandas
+openpyxl
